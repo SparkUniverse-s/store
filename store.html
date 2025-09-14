@@ -191,77 +191,77 @@
   {
     id: 'book-1',
     title: 'Grimoire of Whispered Runes',
-    price: 2500,
+    price: 15,
     description: 'A dense manual on rune invocation, practical and annotated.',
     cover: 'assests/grimoire.jpg'
   },
   {
     id: 'book-2',
     title: 'Invoking 90 Celestial Powers',
-    price: 1800,
+    price: 18,
     description: 'Mantras for personal transformation and shieldwork.',
     cover: 'assests/celestial.png'
   },
   {
     id: 'book-3',
     title: 'Sacred Charm oF Protection And Prosperity',
-    price: 3200,
+    price: 32,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/charm.png'
   },
     {
     id: 'book-4',
     title: '33 Sacred Spells Of The Greeks',
-    price: 3200,
+    price: 12,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/greek.png'
   },
     {
     id: 'book-5',
     title: 'IF THEY ARE BACK',
-    price: 3200,
+    price: 23,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/ifTheyAreBack.png'
   },
     {
     id: 'book-6',
     title: 'The Lost Book Of Merlin Volume 1',
-    price: 3200,
+    price: 30,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/merlin1.png'
   },
     {
     id: 'book-7',
     title: 'The Lost Book Of Merlin Volume 2',
-    price: 3200,
+    price: 40,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/merlin2.png'
   },
     {
     id: 'book-8',
     title: 'The Power Of Ancient Psalms',
-    price: 3200,
+    price: 32,
     description: 'Advanced Psalms For Wealth And Protection',
     cover: 'assests/psalm.png'
   },
     {
     id: 'book-9',
     title: 'The Codex Of The Ancient 12 Kings Of Babylon',
-    price: 3200,
+    price: 20,
     description: 'Unveiling the forbidden reign of starborn monarchs and Celestial Thrones',
     cover: 'assests/thecodex.png'
   },
     {
     id: 'book-10',
     title: 'YESHUA KRISTUS AND THE 12 APOSTLES',
-    price: 3200,
+    price: 15,
     description: 'Prayers To Invoke Yeshua And The 12 Apostles.',
     cover: 'assests/yeshua.png'
   },
     {
     id: 'book-11',
     title: 'A KING NAMED ZEUS ',
-    price: 3200,
+    price: 20,
     description: 'A STORY ABOUT THE RISE OF OLYMPIAN',
     cover: 'assests/zeus.jpg'
   }
@@ -284,9 +284,9 @@ function renderFullProducts(){
       <h3>${p.title}</h3>
       <p>${p.description}</p>
       <div class="meta">
-        <div class="price">${(p.price)}</div>
+        <div class="price">$${(p.price)}</div>
         <div>
-          <button class="add-to-cart" data-id= '${p.title}' data-price = '${p.price}' >Add to cart</button>
+          <button class="add-to-cart checkout-btn" data-id= '${p.title}' data-price = '${p.price}' >Add to cart</button>
         
         </div>
       </div>
@@ -306,34 +306,48 @@ document.querySelectorAll(".add-to-cart").forEach(button => {
         updateCart();
     });
 });
-let total = 0;
+
 document.getElementById('num').style.display = 'none';
 function updateCart() {
-    document.getElementById('num').style.display = 'grid';
-    cartItemsContainer.innerHTML = "";
-    document.getElementById('num').innerText = cart.length
-    cart.forEach(item => {
-        total += item.price;
-        const div = document.createElement("div");
-        div.classList.add("cart-item");
-        div.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span> `;
-        const span = document.createElement('span');
-        span.innerText = 'Remove'; 
-        div.appendChild(span)
-        cartItemsContainer.appendChild(div);
+  cartItemsContainer.innerHTML = "";
+  let total = 0;
 
-        span.addEventListener('click', function(){
-            let new1 = span.parentElement.children[1].innerText.replace('$','')
-            total -= parseInt(new1);
-            cartTotal.textContent = total.toFixed(2);
-            span.parentElement.remove()
-            
-        })
+  // Show the cart badge with item count
+  const badge = document.getElementById('num');
+  if (cart.length > 0) {
+    badge.style.display = 'grid';
+    badge.innerText = cart.length;
+  } else {
+    badge.style.display = 'none'; // hide when empty
+  }
 
+  cart.forEach((item, index) => {
+    total += item.price;
+
+    const div = document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span>`;
+
+    // Remove button
+    const span = document.createElement('span');
+    span.innerText ='❌'; //'Remove';
+    span.style.color = "#be9131";
+    span.style.cursor = "pointer";
+    span.style.marginLeft = "10px";
+    div.appendChild(span);
+
+    cartItemsContainer.appendChild(div);
+
+    // Remove from cart on click
+    span.addEventListener('click', function () {
+      cart.splice(index, 1); // properly remove item
+      updateCart(); // refresh cart UI
     });
+  });
 
-cartTotal.textContent = total.toFixed(2);
+  cartTotal.textContent = total.toFixed(2);
 }
+
 const cartBox = document.getElementById("cart");
 const cartToggle = document.getElementById("cart-toggle");
 

@@ -1,91 +1,90 @@
 // Simple product data (replace with fetch('/api/products') for real backend)
-const PRODUCTS = [
+
+    const PRODUCTS = [
   {
     id: 'book-1',
     title: 'Grimoire of Whispered Runes',
-    price: 2500,
+    price: 15,
     description: 'A dense manual on rune invocation, practical and annotated.',
     cover: 'assests/grimoire.jpg'
   },
   {
     id: 'book-2',
     title: 'Invoking 90 Celestial Powers',
-    price: 1800,
+    price: 18,
     description: 'Mantras for personal transformation and shieldwork.',
     cover: 'assests/celestial.png'
   },
   {
     id: 'book-3',
     title: 'Sacred Charm oF Protection And Prosperity',
-    price: 3200,
+    price: 32,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/charm.png'
   },
     {
     id: 'book-4',
     title: '33 Sacred Spells Of The Greeks',
-    price: 3200,
+    price: 12,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/greek.png'
   },
     {
     id: 'book-5',
     title: 'IF THEY ARE BACK',
-    price: 3200,
+    price: 23,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/ifTheyAreBack.png'
   },
     {
     id: 'book-6',
     title: 'The Lost Book Of Merlin Volume 1',
-    price: 3200,
+    price: 30,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/merlin1.png'
   },
     {
     id: 'book-7',
     title: 'The Lost Book Of Merlin Volume 2',
-    price: 3200,
+    price: 40,
     description: 'Advanced rituals and historical notes — for experienced practitioners.',
     cover: 'assests/merlin2.png'
   },
     {
     id: 'book-8',
     title: 'The Power Of Ancient Psalms',
-    price: 3200,
+    price: 32,
     description: 'Advanced Psalms For Wealth And Protection',
     cover: 'assests/psalm.png'
   },
     {
     id: 'book-9',
     title: 'The Codex Of The Ancient 12 Kings Of Babylon',
-    price: 3200,
+    price: 20,
     description: 'Unveiling the forbidden reign of starborn monarchs and Celestial Thrones',
     cover: 'assests/thecodex.png'
   },
     {
     id: 'book-10',
     title: 'YESHUA KRISTUS AND THE 12 APOSTLES',
-    price: 3200,
+    price: 15,
     description: 'Prayers To Invoke Yeshua And The 12 Apostles.',
     cover: 'assests/yeshua.png'
   },
     {
     id: 'book-11',
     title: 'A KING NAMED ZEUS ',
-    price: 3200,
+    price: 20,
     description: 'A STORY ABOUT THE RISE OF OLYMPIAN',
     cover: 'assests/zeus.jpg'
   }
 
 
 ];
-
 const state = {
   cart: {}
 };
 
-function money(n){ return '₦' + n.toLocaleString() }
 function renderFullProducts(){
   const grid = document.getElementById('product-grid');
   grid.innerHTML = '';
@@ -97,7 +96,7 @@ function renderFullProducts(){
       <h4>${p.title}</h4>
       <p>${p.description}</p>
       <div class="meta">
-        <div class="price">${money(p.price)}</div>
+        <div class="price">$${(p.price)}</div>
         <div>
           <button class="add-btn" data-id="${p.id}">Add to cart</button>
         </div>
@@ -120,7 +119,7 @@ function renderProducts() {
       <h4>${PRODUCTS[p].title}</h4>
       <p>${PRODUCTS[p].description}</p>
       <div class="meta">
-        <div class="price">${money(PRODUCTS[p].price)}</div>
+        <div class="price">$${(PRODUCTS[p].price)}</div>
         <div>
           <button class="add-btn" data-id="${PRODUCTS[p].id}">Add to cart</button>
         </div>
