@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magical Bookstore – Mr Spark</title>
+  
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #f5f5f5;
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      border-bottom: 2px solid #be9131;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      color: #be9131;
+      text-shadow: 0 0 10px rgba(190,145,49,0.8);
+    }
+
+    .store-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 2rem;
+    }
+
+    .book-card {
+      background: #1a1a1a;
+      border: 2px solid #be9131;
+      border-radius: 12px;
+      text-align: center;
+      padding: 1.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 20px rgba(190,145,49,0.6);
+    }
+
+    .book-card img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .book-card h4 {
+      margin: 1rem 0 0.5rem;
+      color: #fff;
+    }
+
+    .book-card p {
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .btn-primary {
+      background: transparent;
+      border: 2px solid #be9131;
+      color: #be9131;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn-primary:hover {
+      background: #be9131;
+      color: #fff;
+    }
+    .cart {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background: #111;
+        border: 2px solid #be9131;
+        border-radius: 10px;
+        padding: 1rem;
+        width: 250px;
+        max-height: 400px;
+        overflow-y: auto;
+        display: none; /* hidden until clicked */
+        z-index: 1000;
+    }
+
+    .cart-icon {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: #be9131;
+        text-shadow: 0 0 8px rgba(190,145,49,0.8);
+        z-index: 1100;
+    }
+    .ip4{
+        position: relative;
+        
+
+    }
+    #num{
+        position: absolute;
+        top: -20px;
+        right: 10px;
+        color: #be9131;
+        border-radius: 50%;
+        background-color: #111;
+        margin: 0 0 0 0;
+        height: 20px;
+        text-align: center;
+        width: 20px;
+        font-size: 18px;
+    }
+
+    .cart-icon:hover {
+        transform: scale(1.1);
+    }
+
+
+
+    .cart h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #be9131;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+    }
+
+    .checkout-btn {
+      margin-top: 1rem;
+      width: 100%;
+      background: #be9131;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .checkout-btn:hover {
+      background: #a97e29;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📚 PrimeStore Library of Arcana ✨</h1>
+  </header>
+
+  <div class="store-container" id="grid">
+    <!-- Book 1 -->
+   
+  </div>
+<!-- Cart Icon -->
+<div class="cart-icon" id="cart-toggle">🛒
+    <div class="ip4">
+    <p id="num"></p>
+    </div>
+</div>
+
+<!-- Cart Box -->
+<div class="cart" id="cart">
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+  <p><strong>Total:</strong> $<span id="cart-total">0</span></p>
+  <button class="checkout-btn">Checkout</button>
+</div>
+ 
+
+  <script>
+    const cartItemsContainer = document.getElementById("cart-items");
+    const cartTotal = document.getElementById("cart-total");
+    let cart = [];
+
+    const PRODUCTS = [
+  {
+    id: 'book-1',
+    title: 'Grimoire of Whispered Runes',
+    price: 2500,
+    description: 'A dense manual on rune invocation, practical and annotated.',
+    cover: 'assests/grimoire.jpg'
+  },
+  {
+    id: 'book-2',
+    title: 'Invoking 90 Celestial Powers',
+    price: 1800,
+    description: 'Mantras for personal transformation and shieldwork.',
+    cover: 'assests/celestial.png'
+  },
+  {
+    id: 'book-3',
+    title: 'Sacred Charm oF Protection And Prosperity',
+    price: 3200,
+    description: 'Advanced rituals and historical notes — for experienced practitioners.',
+    cover: 'assests/charm.png'
+  },
+    {
+    id: 'book-4',
+    title: '33 Sacred Spells Of The Greeks',
+    price: 3200,
+    description: 'Advanced rituals and historical notes — for experienced practitioners.',
+    cover: 'assests/greek.png'
+  },
+    {
+    id: 'book-5',
+    title: 'IF THEY ARE BACK',
+    price: 3200,
+    description: 'Advanced rituals and historical notes — for experienced practitioners.',
+    cover: 'assests/ifTheyAreBack.png'
+  },
+    {
+    id: 'book-6',
+    title: 'The Lost Book Of Merlin Volume 1',
+    price: 3200,
+    description: 'Advanced rituals and historical notes — for experienced practitioners.',
+    cover: 'assests/merlin1.png'
+  },
+    {
+    id: 'book-7',
+    title: 'The Lost Book Of Merlin Volume 2',
+    price: 3200,
+    description: 'Advanced rituals and historical notes — for experienced practitioners.',
+    cover: 'assests/merlin2.png'
+  },
+    {
+    id: 'book-8',
+    title: 'The Power Of Ancient Psalms',
+    price: 3200,
+    description: 'Advanced Psalms For Wealth And Protection',
+    cover: 'assests/psalm.png'
+  },
+    {
+    id: 'book-9',
+    title: 'The Codex Of The Ancient 12 Kings Of Babylon',
+    price: 3200,
+    description: 'Unveiling the forbidden reign of starborn monarchs and Celestial Thrones',
+    cover: 'assests/thecodex.png'
+  },
+    {
+    id: 'book-10',
+    title: 'YESHUA KRISTUS AND THE 12 APOSTLES',
+    price: 3200,
+    description: 'Prayers To Invoke Yeshua And The 12 Apostles.',
+    cover: 'assests/yeshua.png'
+  },
+    {
+    id: 'book-11',
+    title: 'A KING NAMED ZEUS ',
+    price: 3200,
+    description: 'A STORY ABOUT THE RISE OF OLYMPIAN',
+    cover: 'assests/zeus.jpg'
+  }
+
+
+];
+
+const state = {
+  cart: {}
+};
+
+function renderFullProducts(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  PRODUCTS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.innerHTML = `
+      <img src="${p.cover}" alt="${p.title}" />
+      <h3>${p.title}</h3>
+      <p>${p.description}</p>
+      <div class="meta">
+        <div class="price">${(p.price)}</div>
+        <div>
+          <button class="add-to-cart" data-id= '${p.title}' data-price = '${p.price}' >Add to cart</button>
+        
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+}
+renderFullProducts()
+
+document.querySelectorAll(".add-to-cart").forEach(button => {
+    button.addEventListener("click", () => {
+        const name = button.dataset.id;
+
+        const price = parseFloat(button.dataset.price);
+        cart.push({ name, price });
+        updateCart();
+    });
+});
+let total = 0;
+document.getElementById('num').style.display = 'none';
+function updateCart() {
+    document.getElementById('num').style.display = 'grid';
+    cartItemsContainer.innerHTML = "";
+    document.getElementById('num').innerText = cart.length
+    cart.forEach(item => {
+        total += item.price;
+        const div = document.createElement("div");
+        div.classList.add("cart-item");
+        div.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span> `;
+        const span = document.createElement('span');
+        span.innerText = 'Remove'; 
+        div.appendChild(span)
+        cartItemsContainer.appendChild(div);
+
+        span.addEventListener('click', function(){
+            let new1 = span.parentElement.children[1].innerText.replace('$','')
+            total -= parseInt(new1);
+            cartTotal.textContent = total.toFixed(2);
+            span.parentElement.remove()
+            
+        })
+
+    });
+
+cartTotal.textContent = total.toFixed(2);
+}
+const cartBox = document.getElementById("cart");
+const cartToggle = document.getElementById("cart-toggle");
+
+cartToggle.addEventListener("click", () => {
+  cartBox.style.display = cartBox.style.display === "block" ? "none" : "block";
+});
+
+
+</script>
+
+</body>
+</html>

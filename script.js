@@ -86,8 +86,7 @@ const state = {
 };
 
 function money(n){ return '₦' + n.toLocaleString() }
-
-function renderProducts() {
+function renderFullProducts(){
   const grid = document.getElementById('product-grid');
   grid.innerHTML = '';
   PRODUCTS.forEach(p => {
@@ -106,8 +105,73 @@ function renderProducts() {
     `;
     grid.appendChild(card);
   });
-}
 
+}
+const grid = document.getElementById('product-grid');
+let num = 4
+
+function renderProducts() {
+  grid.innerHTML = '';
+  for(let p=0; p<num; p++){
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${PRODUCTS[p].cover}" alt="${PRODUCTS[p].title}" />
+      <h4>${PRODUCTS[p].title}</h4>
+      <p>${PRODUCTS[p].description}</p>
+      <div class="meta">
+        <div class="price">${money(PRODUCTS[p].price)}</div>
+        <div>
+          <button class="add-btn" data-id="${PRODUCTS[p].id}">Add to cart</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+
+  }
+  if(grid.children.length<=num){
+    document.getElementById('continue').style.display='grid'
+  }
+  else{
+    document.getElementById('continue').style.display='none'
+    
+  }
+
+}
+  document.getElementById('continue').addEventListener('click', function(){
+    if(num ===6){
+      document.getElementById('continue').innerText ='Show All';
+
+    }
+    if(grid.children.length<=num && grid.children.length<PRODUCTS.length){
+      num+=2;
+            renderProducts()      
+      
+    }
+    if(num > 6){
+      window.location.href = 'store.html'    
+    }
+  })
+
+/*
+  PRODUCTS.forEach(p => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${p.cover}" alt="${p.title}" />
+      <h4>${p.title}</h4>
+      <p>${p.description}</p>
+      <div class="meta">
+        <div class="price">${money(p.price)}</div>
+        <div>
+          <button class="add-btn" data-id="${p.id}">Add to cart</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+*/
 function updateCartCount() {
   const countEl = document.getElementById('cart-count');
   const totalQty = Object.values(state.cart).reduce((s, i) => s + i.qty, 0);
