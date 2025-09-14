@@ -1,0 +1,120 @@
+:root{
+  --bg:#08020a;
+  --panel:#0f0b12;
+  --muted:#9a8fa3;
+  --accent:#c59b37;
+  --glass: rgba(255,255,255,0.04);
+  --max:1100px;
+  --radius:14px;
+  --shadow: 0 6px 24px rgba(0,0,0,0.6);
+  --text: #efe9f1;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Javanese-Text", Cambria, Cochin, Georgia, Times, 'Times New Roman', serif, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #050308 0%, #090714 60%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  line-height:1.5;
+  padding-bottom:80px;
+}
+
+.container{max-width:var(--max);margin:0 auto;padding:1rem}
+
+.site-header{position:sticky;top:0;background:linear-gradient(90deg, rgba(0,0,0,0.3), transparent);backdrop-filter: blur(4px);z-index:40;border-bottom:1px solid rgba(255,255,255,0.03)}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0}
+.brand{display:flex;gap:0.8rem;align-items:center}
+.logo{width:48px;height:48px;object-fit:contain}
+.brand-title{margin:0;font-family:"Libre Baskerville", serif;font-size:1.05rem}
+.brand-sub{margin:0;color:var(--muted);font-size:0.85rem}
+
+.nav{display:flex;gap:0.6rem;align-items:center}
+.btn-circle{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:0.45rem 0.8rem;border-radius:999px;color:var(--text);cursor:pointer}
+.cart-btn{background:var(--glass);padding:0.45rem 0.6rem;border-radius:8px;border:none;color:var(--text);cursor:pointer}
+.cart-count{background:var(--accent);padding:2px 8px;border-radius:999px;margin-left:6px;color:#060606;font-weight:700}
+
+/* Hero */
+.hero{padding:3rem 0 2rem}
+.hero-grid{display:grid;grid-template-columns:1fr 320px;gap:1.2rem;align-items:center}
+.hero-text h2{font-family:"Libre Baskerville", serif;font-size:2.1rem;margin:0 0 0.6rem}
+.hero-text p{color:var(--muted);max-width:48ch}
+.hero-actions{margin-top:1rem;display:flex;gap:0.6rem}
+.btn-primary {
+  background: transparent;
+  border: solid #be9131 thin;
+  color: #be9131;
+  padding: 10px 25px;
+  border-radius: 50px; /* makes edges fully rounded */
+  
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn{padding:0.6rem 0.9rem;cursor:pointer;font-weight:400;text-decoration: none; }
+.btn-ghost{
+    background: transparent;
+  border: solid #be9131 thin;
+  color: #be9131;
+  padding: 10px 25px;
+  border-radius: 50px; /* makes edges fully rounded */
+  
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+
+.btn:hover {
+  background: #be9131; /* same color as fill on hover */
+  color: #fff;
+}
+.hero-art img{
+    width:100%;max-width:320px;box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+
+/* Products grid */
+.section-title{font-family:"Libre Baskerville", serif;font-size:1.3rem;margin-bottom:0.75rem}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:var(--shadow);
+}
+.card img{width:100%; height:300px; border-radius:8px}
+.card h4{margin:0.6rem 0 0.3rem;font-size:1rem}
+.card p{margin:0;color:var(--muted);font-size:0.9rem}
+.card .meta{display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem}
+.price{font-weight:700}
+.add-btn{align-items: end; justify-content: end; color: wheat;  background:transparent;border:none;border-bottom: thin solid #bcdebc; border-radius: 8px; padding:0.4rem 0.6rem;cursor:pointer}
+
+/* Bundles */
+.bundle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.bundle-card{background:var(--panel);padding:1rem;border-radius:12px;border:1px solid rgba(255,255,255,0.03);}
+
+/* About */
+.about{margin-top:1rem;color:var(--muted)}
+
+/* Cart drawer */
+.cart-drawer{
+  position:fixed;right:18px;bottom:18px;width:340px;max-width:calc(100% - 36px);
+  background:linear-gradient(180deg, rgba(10,6,9,0.95), rgba(12,8,13,0.98));
+  border-radius:12px;padding:0.6rem;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 40px rgba(3,1,2,0.6);
+  transform:translateY(120%);transition:transform .28s cubic-bezier(.2,.9,.3,1);z-index:60;
+}
+.cart-drawer.open{transform:translateY(0)}
+.cart-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:0.6rem}
+.cart-items{max-height:360px;overflow:auto;padding:0.3rem 0}
+.cart-item{display:flex;gap:0.6rem;padding:0.45rem;border-radius:10px;margin-bottom:0.4rem;background:var(--glass)}
+.cart-item img{width:48px;height:64px;object-fit:cover;border-radius:6px}
+.cart-footer{display:flex;justify-content:space-between;align-items:center;padding-top:0.6rem}
+
+/* Toast */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:#111;border-radius:8px;padding:0.6rem 1rem;border:1px solid rgba(255,255,255,0.04)}
+
+/* Responsive */
+@media (max-width:880px){
+  .hero-grid{grid-template-columns:1fr;gap:1rem}
+  .hero-art{order:-1}
+  .brand-title{font-size:1rem}
+}

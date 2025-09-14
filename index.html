@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PrimeStore — The Library of Arcana</title>
+  <meta name="description" content="Mystical books, grimoires, mantras and magical knowledge by Mr Spark." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <img src="assests/logo.png" alt="Mr Spark sigil" class="logo" />
+        <div>
+          <h1 class="brand-title">PrimeStore</h1>
+          <p class="brand-sub">Library of Arcana</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button id="btn-circle" class="btn-circle">Join the Circle</button>
+        <button id="cart-toggle" class="cart-btn" aria-label="Open cart">Cart <span id="cart-count" class="cart-count">0</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h2>Unlock Forgotten Runes & Ancient Mantras</h2>
+          <p>Grimoires, rituals, and manuscripts curated to shift fate. Explore single volumes or bundles — each book crafted as a relic.</p>
+          <div class="hero-actions">
+            <a href="#books" class="btn btn-primary">Browse Books</a>
+            <a href="#bundles" class="btn btn-ghost">See Bundles</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <img src="assests/floating.png" alt="Floating grimoire" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured books -->
+    <section id="books" class="books container">
+      <h3 class="section-title">Featured Tomes</h3>
+      <div id="product-grid" class="product-grid" aria-live="polite"></div>
+    </section>
+
+    <!-- Bundles (static samples) -->
+    <section id="bundles" class="bundles container">
+      <h3 class="section-title">Bundles & Collections</h3>
+      <div class="bundle-grid">
+        <article class="bundle-card" >
+          <h4>Occultic Books</h4>
+          <p>5 grimoires books containing step-by-step mantras on performing many occultic rituals</p>
+          <button class="btn btn-primary" data-bundle="initiate">Buy Bundle</button>
+          <button class="btn btn-primary" data-bundle="initiate">View Bundle</button>
+        </article>
+        <article class="bundle-card">
+          <h4>Sorcerer's Collection</h4>
+          <p>5 advanced volumes, annotated, signed & numbered (limited).</p>
+          <button class="btn btn-primary" data-bundle="sorcerer">Buy Bundle</button>
+        </article>
+
+        <article class="bundle-card">
+          <h4>Sorcerer's Collection</h4>
+          <p>5 advanced volumes, annotated, signed & numbered (limited).</p>
+          <button class="btn btn-primary" data-bundle="sorcerer">Buy Bundle</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- About / Author -->
+    <section class="about container">
+      <h3 class="section-title">About the Keeper</h3>
+      <p class="muted">Mr Spark — author, archivist, and chronicler of arcane knowledge. Each book is written to teach real, practical mantras and rituals with historical context and safety notes.</p>
+    </section>
+  </main>
+
+  <!-- Cart drawer -->
+  <aside id="cart-drawer" class="cart-drawer" aria-hidden="true">
+    <header class="cart-header">
+      <h4>Your Cart</h4>
+      <button id="close-cart" aria-label="Close cart">✕</button>
+    </header>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">Total: <strong id="cart-total">₦0</strong></div>
+      <button id="checkout-btn" class="btn btn-primary">Checkout</button>
+    </div>
+  </aside>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
