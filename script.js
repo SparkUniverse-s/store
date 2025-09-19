@@ -8,7 +8,7 @@ function money(amount) {
 
 // Fetch products from backend
 document.addEventListener('DOMContentLoaded', function () {
-  fetch("http://127.0.0.1:5000/products")
+  fetch("https://store-kqh0.onrender.com/products")
     .then(res => res.json())
     .then(data => {
       PRODUCTS = data;

@@ -185,7 +185,7 @@ let PRODUCTS = [];
 let cart = [];
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch("http://127.0.0.1:5000/products")
+  fetch("https://store-kqh0.onrender.com/products")
     .then(res => res.json())
     .then(data => {
       PRODUCTS = data;
@@ -326,7 +326,7 @@ document.getElementById('checkout').addEventListener('click', function () {
 
   localStorage.setItem("cart", JSON.stringify(cart));
   const books = cart.map(item => item.book);
-  fetch("http://127.0.0.1:5000/checkout", {
+  fetch("https://store-kqh0.onrender.com/checkout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ books, total })

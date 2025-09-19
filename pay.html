@@ -175,7 +175,7 @@
   let lockedAmount = 0;
 
   // ✅ Fetch locked amount and conversion
-  fetch("http://127.0.0.1:5000/conversion-rate")
+  fetch("https://store-kqh0.onrender.com/conversion-rate")
     .then(res => res.json())
     .then(data => {
       lockedAmount = data.totalUSD;
@@ -196,7 +196,7 @@
     if (!email) return showModal("Missing Email", "Please enter your email before choosing a payment method.");
 
     if (method === "paystack") {
-      fetch("http://127.0.0.1:5000/api/pay", {
+      fetch("https://store-kqh0.onrender.com/api/pay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
@@ -210,7 +210,7 @@
           // ⚡ After success, Paystack will redirect back
           // We add a listener to trigger backend email sending
           window.addEventListener("load", () => {
-            fetch("http://127.0.0.1:5000/send-books", {
+            fetch("https://store-kqh0.onrender.com/send-books", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ email })

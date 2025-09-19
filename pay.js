@@ -80,7 +80,7 @@ app.post("/api/pay", async (req, res) => {
       {
         email,
         amount,
-        callback_url: "http://127.0.0.1:5000/payment-success",
+        callback_url: "/payment-success",
       },
       {
         headers: {
