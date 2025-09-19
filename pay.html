@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Magical Secure Checkout</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #1a0033, #000);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .checkout-container {
+      background: rgba(20, 0, 40, 0.9);
+      border: 2px solid #8e44ad;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #9b59b6;
+      padding: 30px;
+      text-align: center;
+      width: 420px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    .checkout-container h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #a29bfe;
+    }
+
+    .amount {
+      font-size: 1.3rem;
+      margin: 15px 0;
+      color: #ffda79;
+      font-weight: bold;
+      text-shadow: 0 0 10px #f6e58d;
+    }
+
+    .conversion {
+      font-size: 0.95rem;
+      color: #dcdde1;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #dcdde1;
+    }
+
+    input {
+      padding: 10px;
+      width: 90%;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: #2c2c54;
+      color: #fff;
+    }
+
+    .payment-options {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: linear-gradient(45deg, #9b59b6, #8e44ad);
+      border: none;
+      padding: 12px 20px;
+      color: #fff;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s ease;
+      box-shadow: 0 0 10px #9b59b6;
+    }
+
+    .option-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #e056fd;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #2c003e, #1b0029);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 30px #9b59b6;
+      max-width: 400px;
+    }
+
+    .modal-content h3 {
+      color: #f6e58d;
+      text-shadow: 0 0 10px #f9ca24;
+      margin-bottom: 15px;
+    }
+
+    .modal-content p {
+      color: #dcdde1;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .close-btn {
+      background: #9b59b6;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #e056fd;
+      box-shadow: 0 0 15px #e056fd;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <h2>✨ Magical Checkout ✨</h2>
+    <p class="amount">Total Amount: <span id="amount"></span></p>
+    <p class="conversion" id="conversion"></p>
+
+    <form id="pay-form">
+      <label>Email:</label>
+      <input type="email" id="email" required placeholder="Enter your email" />
+
+      <div class="payment-options">
+        <button type="button" class="option-btn" onclick="payWith('paystack')">Paystack</button>
+        <button type="button" class="option-btn" onclick="payWith('paypal')">PayPal</button>
+        <button type="button" class="option-btn" onclick="payWith('bitcoin')">Bitcoin</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3 id="modal-title">✨ Coming Soon ✨</h3>
+      <p id="modal-message">This payment option is under enchantment and will be available soon.</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <script>
+  let lockedAmount = 0;
+
+  // ✅ Fetch locked amount and conversion
+  fetch("http://127.0.0.1:5000/conversion-rate")
+    .then(res => res.json())
+    .then(data => {
+      lockedAmount = data.totalUSD;
+      const rate = data.rate;
+      const lockedNaira = data.totalNGN;
+
+      document.getElementById("amount").textContent = "₦" + lockedNaira;
+      document.getElementById("conversion").textContent =
+        `Conversion Rate: 1 USD = ₦${rate} | Total in NGN ≈ ₦${lockedNaira}`;
+    })
+    .catch(err => {
+      console.error("Error loading amount:", err);
+      showModal("Error", "Could not load amount. Please try again.");
+    });
+
+  function payWith(method) {
+    const email = document.getElementById("email").value;
+    if (!email) return showModal("Missing Email", "Please enter your email before choosing a payment method.");
+
+    if (method === "paystack") {
+      fetch("http://127.0.0.1:5000/api/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.data && data.data.authorization_url) {
+          // Redirect to Paystack checkout
+          window.location.href = data.data.authorization_url;
+
+          // ⚡ After success, Paystack will redirect back
+          // We add a listener to trigger backend email sending
+          window.addEventListener("load", () => {
+            fetch("http://127.0.0.1:5000/send-books", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email })
+            })
+            .then(res => res.json())
+            .then(resp => {
+              if (resp.success) {
+                showModal("✅ Books Sent!", "Your purchased books have been delivered to your email.");
+              } else {
+                showModal("⚠️ Error", resp.error || "Could not send your books.");
+              }
+            })
+            .catch(() => showModal("⚠️ Error", "Something went wrong while sending your books."));
+          });
+        } else {
+          showModal("Payment Failed", "Paystack initialization failed. Please try again.");
+        }
+      })
+      .catch(err => showModal("Error", "Something went wrong with Paystack."));
+    }
+
+    if (method === "paypal") {
+      showModal("🔮 PayPal Portal", "The PayPal gateway is being conjured. It will be available soon.");
+    }
+
+    if (method === "bitcoin") {
+      showModal("💎 Bitcoin Gateway", "The Bitcoin crystal is charging. Integration coming soon...");
+    }
+  }
+
+  function showModal(title, message) {
+    document.getElementById("modal-title").textContent = title;
+    document.getElementById("modal-message").textContent = message;
+    document.getElementById("modal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+</script>
+</body>
+</html>

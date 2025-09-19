@@ -77,6 +77,7 @@
       background: #be9131;
       color: #fff;
     }
+
     .cart {
         position: fixed;
         top: 60px;
@@ -102,19 +103,19 @@
         text-shadow: 0 0 8px rgba(190,145,49,0.8);
         z-index: 1100;
     }
-    .ip4{
-        position: relative;
-        
 
+    .ip4 {
+        position: relative;
     }
-    #num{
+
+    #num {
         position: absolute;
         top: -20px;
         right: 10px;
         color: #be9131;
         border-radius: 50%;
         background-color: #111;
-        margin: 0 0 0 0;
+        margin: 0;
         height: 20px;
         text-align: center;
         width: 20px;
@@ -124,8 +125,6 @@
     .cart-icon:hover {
         transform: scale(1.1);
     }
-
-
 
     .cart h2 {
       font-size: 1.2rem;
@@ -163,119 +162,47 @@
   </header>
 
   <div class="store-container" id="grid">
-    <!-- Book 1 -->
-   
+    <!-- Products will load here -->
   </div>
-<!-- Cart Icon -->
-<div class="cart-icon" id="cart-toggle">🛒
+
+  <!-- Cart Icon -->
+  <div class="cart-icon" id="cart-toggle">🛒
     <div class="ip4">
-    <p id="num"></p>
+      <p id="num"></p>
     </div>
-</div>
+  </div>
 
-<!-- Cart Box -->
-<div class="cart" id="cart">
-  <h2>Your Cart</h2>
-  <div id="cart-items"></div>
-  <p><strong>Total:</strong> $<span id="cart-total">0</span></p>
-  <button class="checkout-btn">Checkout</button>
-</div>
+  <!-- Cart Box -->
+  <div class="cart" id="cart">
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+    <p><strong>Total:</strong> $<span id="cart-total">0</span></p>
+    <button class="checkout-btn" id="checkout">Checkout</button>
+  </div>
  
+<script>
+let PRODUCTS = [];
+let cart = [];
 
-  <script>
-    const cartItemsContainer = document.getElementById("cart-items");
-    const cartTotal = document.getElementById("cart-total");
-    let cart = [];
+document.addEventListener('DOMContentLoaded', function () {
+  fetch("http://127.0.0.1:5000/products")
+    .then(res => res.json())
+    .then(data => {
+      PRODUCTS = data;
+      renderFullProducts();
+      loadCart();
+    })
+    .catch(err => console.error("Error loading products:", err));
+});
 
-    const PRODUCTS = [
-  {
-    id: 'book-1',
-    title: 'Grimoire of Whispered Runes',
-    price: 15,
-    description: 'A dense manual on rune invocation, practical and annotated.',
-    cover: 'assests/grimoire.jpg'
-  },
-  {
-    id: 'book-2',
-    title: 'Invoking 90 Celestial Powers',
-    price: 18,
-    description: 'Mantras for personal transformation and shieldwork.',
-    cover: 'assests/celestial.png'
-  },
-  {
-    id: 'book-3',
-    title: 'Sacred Charm oF Protection And Prosperity',
-    price: 32,
-    description: 'Advanced rituals and historical notes — for experienced practitioners.',
-    cover: 'assests/charm.png'
-  },
-    {
-    id: 'book-4',
-    title: '33 Sacred Spells Of The Greeks',
-    price: 12,
-    description: 'Advanced rituals and historical notes — for experienced practitioners.',
-    cover: 'assests/greek.png'
-  },
-    {
-    id: 'book-5',
-    title: 'IF THEY ARE BACK',
-    price: 23,
-    description: 'Advanced rituals and historical notes — for experienced practitioners.',
-    cover: 'assests/ifTheyAreBack.png'
-  },
-    {
-    id: 'book-6',
-    title: 'The Lost Book Of Merlin Volume 1',
-    price: 30,
-    description: 'Advanced rituals and historical notes — for experienced practitioners.',
-    cover: 'assests/merlin1.png'
-  },
-    {
-    id: 'book-7',
-    title: 'The Lost Book Of Merlin Volume 2',
-    price: 40,
-    description: 'Advanced rituals and historical notes — for experienced practitioners.',
-    cover: 'assests/merlin2.png'
-  },
-    {
-    id: 'book-8',
-    title: 'The Power Of Ancient Psalms',
-    price: 32,
-    description: 'Advanced Psalms For Wealth And Protection',
-    cover: 'assests/psalm.png'
-  },
-    {
-    id: 'book-9',
-    title: 'The Codex Of The Ancient 12 Kings Of Babylon',
-    price: 20,
-    description: 'Unveiling the forbidden reign of starborn monarchs and Celestial Thrones',
-    cover: 'assests/thecodex.png'
-  },
-    {
-    id: 'book-10',
-    title: 'YESHUA KRISTUS AND THE 12 APOSTLES',
-    price: 15,
-    description: 'Prayers To Invoke Yeshua And The 12 Apostles.',
-    cover: 'assests/yeshua.png'
-  },
-    {
-    id: 'book-11',
-    title: 'A KING NAMED ZEUS ',
-    price: 20,
-    description: 'A STORY ABOUT THE RISE OF OLYMPIAN',
-    cover: 'assests/zeus.jpg'
-  }
+const cartItemsContainer = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const badge = document.getElementById("num");
 
-
-];
-
-const state = {
-  cart: {}
-};
-
-function renderFullProducts(){
+function renderFullProducts() {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
+
   PRODUCTS.forEach(p => {
     const card = document.createElement('div');
     card.className = 'book-card';
@@ -284,69 +211,134 @@ function renderFullProducts(){
       <h3>${p.title}</h3>
       <p>${p.description}</p>
       <div class="meta">
-        <div class="price">$${(p.price)}</div>
+        <div class="price">$${p.price}</div>
         <div>
-          <button class="add-to-cart checkout-btn" data-id= '${p.title}' data-price = '${p.price}' >Add to cart</button>
-        
+          <button class="add-to-cart checkout-btn" 
+                  data-id="${p.title}" 
+                  data-price="${p.price}"
+                  data-book = '${p.book}'
+                  >
+            Add to cart
+          </button>
         </div>
       </div>
     `;
     grid.appendChild(card);
   });
-
-}
-renderFullProducts()
-
-document.querySelectorAll(".add-to-cart").forEach(button => {
+let downloadBook = [];
+  document.querySelectorAll(".add-to-cart").forEach(button => {
     button.addEventListener("click", () => {
-        const name = button.dataset.id;
-
-        const price = parseFloat(button.dataset.price);
-        cart.push({ name, price });
-        updateCart();
+      const name = button.dataset.id;
+      const price = parseFloat(button.dataset.price);
+      const book = button.dataset.book;
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, book, qty: 1 });
+      }
+      updateCart();
     });
-});
+  });
+}
 
-document.getElementById('num').style.display = 'none';
+let total = 0;
+
 function updateCart() {
+  total = 0;
   cartItemsContainer.innerHTML = "";
-  let total = 0;
 
-  // Show the cart badge with item count
-  const badge = document.getElementById('num');
   if (cart.length > 0) {
     badge.style.display = 'grid';
-    badge.innerText = cart.length;
+    badge.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
   } else {
-    badge.style.display = 'none'; // hide when empty
+    badge.style.display = 'none';
   }
 
   cart.forEach((item, index) => {
-    total += item.price;
+    total += item.price * item.qty;
 
     const div = document.createElement("div");
     div.classList.add("cart-item");
-    div.innerHTML = `<span>${item.name}</span> <span>$${item.price}</span>`;
+    div.innerHTML = `
+      <span>${item.name} (x${item.qty})</span>
+      <span>$${(item.price * item.qty).toFixed(2)}</span>
+    `;
 
-    // Remove button
-    const span = document.createElement('span');
-    span.innerText ='❌'; //'Remove';
-    span.style.color = "#be9131";
-    span.style.cursor = "pointer";
-    span.style.marginLeft = "10px";
-    div.appendChild(span);
+    const remove = document.createElement('span');
+    remove.innerText = '❌';
+    remove.style.color = "#be9131";
+    remove.style.cursor = "pointer";
+    remove.style.marginLeft = "10px";
+    div.appendChild(remove);
+
+    remove.addEventListener('click', () => {
+      cart.splice(index, 1);
+      updateCart();
+    });
+
+    const controls = document.createElement('div');
+    controls.style.marginLeft = "10px";
+    controls.innerHTML = `
+      <button class="dec">-</button>
+      <button class="inc">+</button>
+    `;
+    div.appendChild(controls);
+
+    controls.querySelector('.dec').addEventListener('click', () => {
+      if (item.qty > 1) {
+        item.qty--;
+      } else {
+        cart.splice(index, 1);
+      }
+      updateCart();
+    });
+
+    controls.querySelector('.inc').addEventListener('click', () => {
+      item.qty++;
+      updateCart();
+    });
 
     cartItemsContainer.appendChild(div);
-
-    // Remove from cart on click
-    span.addEventListener('click', function () {
-      cart.splice(index, 1); // properly remove item
-      updateCart(); // refresh cart UI
-    });
   });
 
   cartTotal.textContent = total.toFixed(2);
+  saveCart();
 }
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function loadCart() {
+  const saved = localStorage.getItem("cart");
+  if (saved) {
+    cart = JSON.parse(saved);
+    updateCart();
+  }
+}
+
+document.getElementById('checkout').addEventListener('click', function () {
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  const books = cart.map(item => item.book);
+  fetch("http://127.0.0.1:5000/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ books, total })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.redirect) {
+      window.location.href = data.redirect; // 🔗 go to pay.html
+    }
+  })
+  .catch(err => console.error("Checkout Error:", err));
+});
 
 const cartBox = document.getElementById("cart");
 const cartToggle = document.getElementById("cart-toggle");
@@ -354,9 +346,6 @@ const cartToggle = document.getElementById("cart-toggle");
 cartToggle.addEventListener("click", () => {
   cartBox.style.display = cartBox.style.display === "block" ? "none" : "block";
 });
-
-
 </script>
-
 </body>
 </html>
