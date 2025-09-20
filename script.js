@@ -1,165 +1,229 @@
 let PRODUCTS = [];
-let state = { cart: {} }; // ✅ one consistent cart state
+let cart = [];
+let total = 0;
 
-// Format money helper
-function money(amount) {
-  return `$${amount.toFixed(2)}`;
-}
-
-// Fetch products from backend
 document.addEventListener('DOMContentLoaded', function () {
   fetch("https://store-kqh0.onrender.com/products")
     .then(res => res.json())
     .then(data => {
       PRODUCTS = data;
-      renderProducts();
+      renderProducts(3); // show only 3 at first
+      loadCart();
+      setupSeeMore();
     })
     .catch(err => console.error("Error loading products:", err));
 });
 
 const grid = document.getElementById('product-grid');
+const cartItemsContainer = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const badge = document.getElementById("cart-count");
+const seeMoreBtn = document.getElementById("continue");
 
-/* Show initial set of products */
-let num = 4;
-function renderProducts() {
+/* Show products */
+function renderProducts(limit) {
   grid.innerHTML = '';
-  for (let p = 0; p < Math.min(num, PRODUCTS.length); p++) {
+  PRODUCTS.slice(0, limit).forEach(p => {
     const card = document.createElement('article');
     card.className = 'card';
     card.innerHTML = `
-      <img src="${PRODUCTS[p].cover}" alt="${PRODUCTS[p].title}" />
-      <h4>${PRODUCTS[p].title}</h4>
-      <p>${PRODUCTS[p].description}</p>
+      <img src="${p.cover}" alt="${p.title}" />
+      <h4>${p.title}</h4>
+      <p>${p.description}</p>
       <div class="meta">
-        <div class="price">${money(PRODUCTS[p].price)}</div>
+        <div class="price">₦${p.price}</div>
         <div>
-          <button class="add-btn" data-id="${PRODUCTS[p].id}">Add to cart</button>
+          <button class="add-btn" 
+                  data-id="${p.title}" 
+                  data-price="${p.price}"
+                  data-book="${p.book}">
+            Add to cart
+          </button>
         </div>
       </div>
     `;
     grid.appendChild(card);
-  }
-
-  // Show/hide continue button
-  document.getElementById('continue').style.display =
-    PRODUCTS.length > num ? 'grid' : 'none';
-}
-
-// Handle continue button
-document.getElementById('continue').addEventListener('click', function () {
-  if (num === 6) {
-    document.getElementById('continue').innerText = 'Show All';
-  }
-  if (num < PRODUCTS.length) {
-    num += 2;
-    renderProducts();
-  } else {
-    window.location.href = 'store.html';
-  }
-});
-
-/* Cart logic */
-function updateCartCount() {
-  const countEl = document.getElementById('cart-count');
-  const totalQty = Object.values(state.cart).reduce((s, i) => s + i.qty, 0);
-  countEl.textContent = totalQty;
-}
-
-function addToCart(id) {
-  const prod = PRODUCTS.find(p => p.id === id);
-  if (!prod) return;
-  if (!state.cart[id]) state.cart[id] = { ...prod, qty: 0 };
-  state.cart[id].qty += 1;
-  showToast(`${prod.title} added to cart`);
-  updateCartCount();
-  renderCart();
-}
-
-function renderCart() {
-  const el = document.getElementById('cart-items');
-  el.innerHTML = '';
-  const items = Object.values(state.cart);
-
-  if (items.length === 0) {
-    el.innerHTML = '<p class="muted">Cart is empty</p>';
-    document.getElementById('cart-total').textContent = money(0);
-    return;
-  }
-
-  let total = 0;
-  items.forEach(item => {
-    total += item.price * item.qty;
-    const node = document.createElement('div');
-    node.className = 'cart-item';
-    node.innerHTML = `
-      <img src="${item.cover}" alt="${item.title}" />
-      <div style="flex:1">
-        <strong>${item.title}</strong>
-        <div style="font-size:0.9rem;color:var(--muted)">${money(item.price)} × ${item.qty}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
-        <button data-id="${item.id}" class="qty-incr">＋</button>
-        <button data-id="${item.id}" class="qty-decr">－</button>
-      </div>
-    `;
-    el.appendChild(node);
   });
 
-  document.getElementById('cart-total').textContent = money(total);
+  // Attach add-to-cart events
+  document.querySelectorAll(".add-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      const name = button.dataset.id;
+      const price = parseFloat(button.dataset.price);
+      const book = button.dataset.book;
+
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, book, qty: 1 });
+      }
+      updateCart();
+      showToast(`${name} added to cart`);
+    });
+  });
 }
 
-/* UI interactions */
-document.addEventListener('click', (e) => {
-  const add = e.target.closest('.add-btn');
-  if (add) {
-    addToCart(add.dataset.id);
+/* Setup See More button */
+function setupSeeMore() {
+  let state = 0;
+  seeMoreBtn.style.display = "inline-block";
+
+  seeMoreBtn.addEventListener("click", () => {
+    if (state === 0) {
+      renderProducts(5); // show 2 more
+      state = 1;
+      seeMoreBtn.textContent = "Open Full Store";
+    } else {
+      // Create overlay box
+      const overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.top = "0";
+      overlay.style.left = "0";
+      overlay.style.width = "100%";
+      overlay.style.height = "100%";
+      overlay.style.background = "rgba(0,0,0,0.8)";
+      overlay.style.display = "flex";
+      overlay.style.justifyContent = "center";
+      overlay.style.alignItems = "center";
+      overlay.style.zIndex = "9999";
+
+      const box = document.createElement("div");
+      box.style.background = "#fff";
+      box.style.padding = "30px";
+      box.style.color = 'black';
+      box.style.borderRadius = "12px";
+      box.style.textAlign = "center";
+      box.innerHTML = `
+        <h3>Opening Store...</h3>
+        <p>Redirecting you to the full store</p>
+      `;
+
+      overlay.appendChild(box);
+      document.body.appendChild(overlay);
+
+      setTimeout(() => {
+        window.location.href = "store.html";
+      }, 2000);
+    }
+  });
+}
+
+/* Update cart display */
+function updateCart() {
+  total = 0;
+  cartItemsContainer.innerHTML = "";
+
+  if (cart.length > 0) {
+    badge.style.display = 'grid';
+    badge.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+  } else {
+    badge.style.display = 'none';
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price * item.qty;
+
+    const div = document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML = `
+      <span>${item.name} (x${item.qty})</span>
+      <span>₦${(item.price * item.qty).toFixed(2)}</span>
+    `;
+
+    // ❌ remove button
+    const remove = document.createElement('span');
+    remove.innerText = '❌';
+    remove.style.color = "#be9131";
+    remove.style.cursor = "pointer";
+    remove.style.marginLeft = "10px";
+    div.appendChild(remove);
+    remove.addEventListener('click', () => {
+      cart.splice(index, 1);
+      updateCart();
+    });
+
+    // + / - controls
+    const controls = document.createElement('div');
+    controls.style.marginLeft = "10px";
+    controls.innerHTML = `
+      <button class="dec">-</button>
+      <button class="inc">+</button>
+    `;
+    div.appendChild(controls);
+
+    controls.querySelector('.dec').addEventListener('click', () => {
+      if (item.qty > 1) {
+        item.qty--;
+      } else {
+        cart.splice(index, 1);
+      }
+      updateCart();
+    });
+
+    controls.querySelector('.inc').addEventListener('click', () => {
+      item.qty++;
+      updateCart();
+    });
+
+    cartItemsContainer.appendChild(div);
+  });
+
+  cartTotal.textContent = `₦${total.toFixed(2)}`;
+  saveCart();
+}
+
+/* Save & load cart */
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+function loadCart() {
+  const saved = localStorage.getItem("cart");
+  if (saved) {
+    cart = JSON.parse(saved);
+    updateCart();
+  }
+}
+
+/* Checkout flow */
+document.getElementById('checkout-btn').addEventListener('click', function () {
+  if (cart.length === 0) {
+    showToast("Your cart is empty!");
     return;
   }
 
-  if (e.target.matches('#cart-toggle')) toggleCart(true);
-  if (e.target.matches('#close-cart')) toggleCart(false);
-
-  if (e.target.matches('.qty-incr')) {
-    const id = e.target.dataset.id;
-    state.cart[id].qty += 1;
-    updateCartCount(); renderCart();
-  }
-  if (e.target.matches('.qty-decr')) {
-    const id = e.target.dataset.id;
-    state.cart[id].qty -= 1;
-    if (state.cart[id].qty <= 0) delete state.cart[id];
-    updateCartCount(); renderCart();
-  }
-
-  if (e.target.matches('#checkout-btn')) handleCheckout();
+  localStorage.setItem("cart", JSON.stringify(cart));
+  const books = cart.map(item => item.book);
+  fetch("https://store-kqh0.onrender.com/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ books, total })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.redirect) {
+      window.location.href = data.redirect; // go to pay.html
+    }
+  })
+  .catch(err => console.error("Checkout Error:", err));
 });
 
-/* Drawer toggle */
+/* Cart drawer toggle */
 function toggleCart(open) {
   const drawer = document.getElementById('cart-drawer');
   drawer.classList.toggle('open', !!open);
   drawer.setAttribute('aria-hidden', !open);
 }
 
-/* Toast notifications */
-let toastTimer;
-function showToast(text, ms = 2200) {
-  const t = document.getElementById('toast');
-  t.textContent = text; t.hidden = false;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.hidden = true, ms);
-}
+document.getElementById('cart-toggle').addEventListener('click', () => toggleCart(true));
+document.getElementById('close-cart').addEventListener('click', () => toggleCart(false));
 
-/* Checkout placeholder */
-function handleCheckout() {
-  const items = Object.values(state.cart);
-  if (items.length === 0) { showToast('Cart is empty'); return; }
-  const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-  if (confirm(`Proceed to checkout — total ${money(total)}?`)) {
-    showToast('Checkout flow not connected. Integrate Paystack/Stripe here.');
-  }
+/* Toast helper */
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.hidden = false;
+  setTimeout(() => {
+    toast.hidden = true;
+  }, 2000);
 }
-
-/* Init */
-updateCartCount();
-renderCart();
