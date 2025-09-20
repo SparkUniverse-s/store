@@ -31,7 +31,7 @@ function renderProducts(limit) {
       <h4>${p.title}</h4>
       <p>${p.description}</p>
       <div class="meta">
-        <div class="price">₦${p.price}</div>
+        <div class="price">$${p.price}</div>
         <div>
           <button class="add-btn" 
                   data-id="${p.title}" 

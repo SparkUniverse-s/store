@@ -2,7 +2,7 @@
   {
     id: 'book-1',
     title: 'Grimoire of Whispered Runes',
-    price: 0.05,
+    price: 0.1,
     description: 'A dense manual on rune invocation, practical and annotated.',
     cover: 'assests/grimoire.jpg',
     book:'book1.pdf'
@@ -10,7 +10,7 @@
   {
     id: 'book-2',
     title: 'Invoking 90 Celestial Powers',
-    price: 0.05,
+    price: 0.1 ,
     description: 'Mantras for personal transformation and shieldwork.',
     cover: 'assests/celestial.png',
     book:'book2.pdf'
