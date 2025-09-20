@@ -80,7 +80,7 @@ app.post("/api/pay", async (req, res) => {
       {
         email,
         amount,
-        callback_url: "/payment-success",
+        callback_url: "https://store-kqh0.onrender.com/payment-success",
       },
       {
         headers: {
@@ -153,7 +153,7 @@ app.get("/payment-success", async (req, res) => {
         </button>
         <script>
           function downloadBooks() {
-            fetch("/download")
+            fetch("https://store-kqh0.onrender.com/download")
               .then(res => res.blob())
               .then(blob => {
                 const link = document.createElement("a");
