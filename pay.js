@@ -7,6 +7,9 @@ import path from "path";
 import archiver from "archiver";
 import nodemailer from "nodemailer";
 import { PRODUCTS } from "./product.js";
+import fs from "fs";
+import path from "path";
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,10 +35,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // ✅ Products endpoint
-app.get("/products", (req, res) => {
-  res.json(PRODUCTS);
-});
 
+app.get("/products", (req, res) => {
+  const filePath = "https://sparkuniverse-s.github.io/store/products.json"; // or products.js
+  const data = fs.readFileSync(filePath, "utf-8");
+  const products = JSON.parse(data);
+  res.json(products);
+});
 // ✅ Checkout → register selected books and total
 app.post("/checkout", (req, res) => {
   const { books, total } = req.body;

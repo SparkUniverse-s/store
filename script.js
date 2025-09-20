@@ -128,7 +128,7 @@ function updateCart() {
     div.classList.add("cart-item");
     div.innerHTML = `
       <span>${item.name} (x${item.qty})</span>
-      <span>₦${(item.price * item.qty).toFixed(2)}</span>
+      <span>$${(item.price * item.qty).toFixed(2)}</span>
     `;
 
     // ❌ remove button
@@ -169,7 +169,7 @@ function updateCart() {
     cartItemsContainer.appendChild(div);
   });
 
-  cartTotal.textContent = `₦${total.toFixed(2)}`;
+  cartTotal.textContent = `$${total.toFixed(2)}`;
   saveCart();
 }
 
