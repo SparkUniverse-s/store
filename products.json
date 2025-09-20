@@ -2,7 +2,7 @@
   {
     "id": "book-1",
     "title": "Grimoire of Whispered Runes",
-    "price": 0.1,
+    "price": 0.3,
     "description": "A dense manual on rune invocation, practical and annotated.",
     "cover": "assests/grimoire.jpg",
     "book": "book1.pdf"
