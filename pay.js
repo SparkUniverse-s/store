@@ -6,9 +6,6 @@ import fs from "fs";
 import path from "path";
 import archiver from "archiver";
 import nodemailer from "nodemailer";
-import { PRODUCTS } from "./product.js";
-import fs from "fs";
-import path from "path";
 
 
 const app = express();
