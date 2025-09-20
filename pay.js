@@ -8,6 +8,7 @@ import archiver from "archiver";
 import nodemailer from "nodemailer";
 
 
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -34,7 +35,7 @@ app.use(bodyParser.json());
 // ✅ Products endpoint
 
 app.get("/products", (req, res) => {
-  const filePath = "https://sparkuniverse-s.github.io/store/products.json"; // or products.js
+  const filePath = path.join(process.cwd(), "products.json"); // or products.js
   const data = fs.readFileSync(filePath, "utf-8");
   const products = JSON.parse(data);
   res.json(products);
